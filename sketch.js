@@ -4,7 +4,8 @@ let blockers = [];
 let world = {
   gravity: 0.9,
   blockerSpawnRate: 50,
-  blockerHeight: 20 //Remember this
+  blockerHeight: 20, //Remember this
+  gameState: "menu"
 };
 
 function setup() {
@@ -15,13 +16,30 @@ function setup() {
 
 function draw() {
   background(0);
+  switch (world.gameState) {
+    case "game":
+      runGame();
+      break;
+    case "menu":
+      loadMenu();
+      break;
+  }
+}
 
+function loadMenu() {
+  textSize(32);
+  text("Press Space to Start", width / 2, height / 2);
+  textAlign(CENTER, CENTER);
+  fill(0, 102, 153);
+}
+
+function runGame() {
   for (let i = blockers.length - 1; i >= 0; i--) {
     blockers[i].show();
     blockers[i].update();
 
     if (blockers[i].collide(corvi)) {
-      console.log("HITS")
+      console.log("HITS");
       corvi.alive = false;
     }
 
@@ -40,12 +58,16 @@ function draw() {
 }
 
 function keyPressed() {
-  if (corvi.alive) {
-    if (key == " ") {
-      corvi.flap();
+  if (key == " ") {
+    if (world.gameState === "menu") {
+      world.gameState = "game";
+    } else {
+      if (corvi.alive) {
+        corvi.flap();
+      }
     }
-  }
-  if (key == "f") {
-    corvi.wha();
+    if (key == "f") {
+      corvi.wha();
+    }
   }
 }
